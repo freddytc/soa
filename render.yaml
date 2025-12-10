@@ -195,7 +195,6 @@ services:
     name: soa-frontend
     env: static
     plan: free
-    region: oregon
     buildCommand: cd Frontend && npm install && npm run build
     staticPublishPath: ./Frontend/dist
     routes:
