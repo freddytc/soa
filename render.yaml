@@ -1,0 +1,244 @@
+# ═══════════════════════════════════════════════════════════════════════════
+# Render Blueprint - Sistema SOA Ticketing
+# ═══════════════════════════════════════════════════════════════════════════
+# Despliega todos los servicios en Render.com
+# Documentación: https://render.com/docs/blueprint-spec
+# ═══════════════════════════════════════════════════════════════════════════
+
+services:
+  # ─────────────────────────────────────────────────────────────────────────
+  # Base de Datos MySQL (PostgreSQL en Render - gratuita)
+  # ─────────────────────────────────────────────────────────────────────────
+  - type: pserv
+    name: soa-database
+    env: docker
+    plan: free
+    region: oregon
+    databases:
+      - name: ticketing
+        databaseName: ticketing
+        user: soa_user
+
+  # ─────────────────────────────────────────────────────────────────────────
+  # User Service - Autenticación (Puerto 8081)
+  # ─────────────────────────────────────────────────────────────────────────
+  - type: web
+    name: soa-user-service
+    env: docker
+    plan: free
+    region: oregon
+    dockerfilePath: ./user-service/Dockerfile
+    dockerContext: ./user-service
+    envVars:
+      - key: SPRING_DATASOURCE_URL
+        fromDatabase:
+          name: soa-database
+          property: connectionString
+      - key: SPRING_DATASOURCE_USERNAME
+        fromDatabase:
+          name: soa-database
+          property: user
+      - key: SPRING_DATASOURCE_PASSWORD
+        fromDatabase:
+          name: soa-database
+          property: password
+      - key: JWT_SECRET
+        value: mysecretkeymysecretkeymysecretkeymysecretkey
+      - key: GATEWAY_SECRET
+        value: soa-gateway-secret-key-2024
+      - key: SERVER_PORT
+        value: 8081
+
+  # ─────────────────────────────────────────────────────────────────────────
+  # Event Service - Gestión de eventos (Puerto 8082)
+  # ─────────────────────────────────────────────────────────────────────────
+  - type: web
+    name: soa-event-service
+    env: docker
+    plan: free
+    region: oregon
+    dockerfilePath: ./event-service/Dockerfile
+    dockerContext: ./event-service
+    envVars:
+      - key: SPRING_DATASOURCE_URL
+        fromDatabase:
+          name: soa-database
+          property: connectionString
+      - key: SPRING_DATASOURCE_USERNAME
+        fromDatabase:
+          name: soa-database
+          property: user
+      - key: SPRING_DATASOURCE_PASSWORD
+        fromDatabase:
+          name: soa-database
+          property: password
+      - key: GATEWAY_SECRET
+        value: soa-gateway-secret-key-2024
+      - key: SERVER_PORT
+        value: 8082
+
+  # ─────────────────────────────────────────────────────────────────────────
+  # Payment Service - Mock de pasarela (Puerto 8084)
+  # ─────────────────────────────────────────────────────────────────────────
+  - type: web
+    name: soa-payment-service
+    env: docker
+    plan: free
+    region: oregon
+    dockerfilePath: ./payment-service/Dockerfile
+    dockerContext: ./payment-service
+    envVars:
+      - key: SPRING_DATASOURCE_URL
+        fromDatabase:
+          name: soa-database
+          property: connectionString
+      - key: SPRING_DATASOURCE_USERNAME
+        fromDatabase:
+          name: soa-database
+          property: user
+      - key: SPRING_DATASOURCE_PASSWORD
+        fromDatabase:
+          name: soa-database
+          property: password
+      - key: GATEWAY_SECRET
+        value: soa-gateway-secret-key-2024
+      - key: SERVER_PORT
+        value: 8084
+
+  # ─────────────────────────────────────────────────────────────────────────
+  # Notification Service - Emails (Puerto 8085)
+  # ─────────────────────────────────────────────────────────────────────────
+  - type: web
+    name: soa-notification-service
+    env: docker
+    plan: free
+    region: oregon
+    dockerfilePath: ./notification-service/Dockerfile
+    dockerContext: ./notification-service
+    envVars:
+      - key: GATEWAY_SECRET
+        value: soa-gateway-secret-key-2024
+      - key: SPRING_MAIL_USERNAME
+        sync: false
+      - key: SPRING_MAIL_PASSWORD
+        sync: false
+      - key: SERVER_PORT
+        value: 8085
+
+  # ─────────────────────────────────────────────────────────────────────────
+  # Ticket Service - Gestión de tickets (Puerto 8086)
+  # ─────────────────────────────────────────────────────────────────────────
+  - type: web
+    name: soa-ticket-service
+    env: docker
+    plan: free
+    region: oregon
+    dockerfilePath: ./ticket-service/Dockerfile
+    dockerContext: ./ticket-service
+    envVars:
+      - key: SPRING_DATASOURCE_URL
+        fromDatabase:
+          name: soa-database
+          property: connectionString
+      - key: SPRING_DATASOURCE_USERNAME
+        fromDatabase:
+          name: soa-database
+          property: user
+      - key: SPRING_DATASOURCE_PASSWORD
+        fromDatabase:
+          name: soa-database
+          property: password
+      - key: GATEWAY_SECRET
+        value: soa-gateway-secret-key-2024
+      - key: SERVER_PORT
+        value: 8086
+
+  # ─────────────────────────────────────────────────────────────────────────
+  # Image Service - Gestión de imágenes (Puerto 8087)
+  # ─────────────────────────────────────────────────────────────────────────
+  - type: web
+    name: soa-image-service
+    env: docker
+    plan: free
+    region: oregon
+    dockerfilePath: ./image-service/Dockerfile
+    dockerContext: ./image-service
+    envVars:
+      - key: GATEWAY_SECRET
+        value: soa-gateway-secret-key-2024
+      - key: SERVER_PORT
+        value: 8087
+
+  # ─────────────────────────────────────────────────────────────────────────
+  # Camunda Service - Coordinador SAGA (Puerto 8083)
+  # ─────────────────────────────────────────────────────────────────────────
+  - type: web
+    name: soa-camunda-service
+    env: docker
+    plan: free
+    region: oregon
+    dockerfilePath: ./camunda-service/Dockerfile
+    dockerContext: ./camunda-service
+    envVars:
+      - key: SPRING_DATASOURCE_URL
+        fromDatabase:
+          name: soa-database
+          property: connectionString
+      - key: SPRING_DATASOURCE_USERNAME
+        fromDatabase:
+          name: soa-database
+          property: user
+      - key: SPRING_DATASOURCE_PASSWORD
+        fromDatabase:
+          name: soa-database
+          property: password
+      - key: GATEWAY_SECRET
+        value: soa-gateway-secret-key-2024
+      - key: SERVICES_USER_SERVICE_URL
+        value: https://soa-user-service.onrender.com
+      - key: SERVICES_EVENT_SERVICE_URL
+        value: https://soa-event-service.onrender.com
+      - key: SERVICES_PAYMENT_SERVICE_URL
+        value: https://soa-payment-service.onrender.com
+      - key: SERVICES_NOTIFICATION_SERVICE_URL
+        value: https://soa-notification-service.onrender.com
+      - key: SERVICES_TICKET_SERVICE_URL
+        value: https://soa-ticket-service.onrender.com
+      - key: SERVER_PORT
+        value: 8083
+
+  # ─────────────────────────────────────────────────────────────────────────
+  # Gateway - API Gateway con JWT (Puerto 8080)
+  # ─────────────────────────────────────────────────────────────────────────
+  - type: web
+    name: soa-gateway
+    env: docker
+    plan: free
+    region: oregon
+    dockerfilePath: ./gateway/Dockerfile
+    dockerContext: ./gateway
+    envVars:
+      - key: JWT_SECRET
+        value: mysecretkeymysecretkeymysecretkeymysecretkey
+      - key: GATEWAY_SECRET
+        value: soa-gateway-secret-key-2024
+      - key: SERVER_PORT
+        value: 8080
+
+  # ─────────────────────────────────────────────────────────────────────────
+  # Frontend - React SPA (Puerto 80)
+  # ─────────────────────────────────────────────────────────────────────────
+  - type: web
+    name: soa-frontend
+    env: static
+    plan: free
+    region: oregon
+    buildCommand: cd Frontend && npm install && npm run build
+    staticPublishPath: ./Frontend/dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_API_URL
+        value: https://soa-gateway.onrender.com
