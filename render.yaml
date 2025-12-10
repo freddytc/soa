@@ -3,18 +3,14 @@
 # ═══════════════════════════════════════════════════════════════════════════
 # Despliega todos los servicios en Render.com
 # Documentación: https://render.com/docs/blueprint-spec
+# 
+# IMPORTANTE: Crea las bases de datos PostgreSQL MANUALMENTE antes de aplicar:
+#   1. ticketing_db (para user, event, payment)
+#   2. orchestration_db (para camunda)
+#   3. ticket_db (para ticket-service)
 # ═══════════════════════════════════════════════════════════════════════════
 
 services:
-  # ─────────────────────────────────────────────────────────────────────────
-  # Base de Datos PostgreSQL (gratuita en Render)
-  # ─────────────────────────────────────────────────────────────────────────
-  - type: pserv
-    name: soa-database
-    plan: free
-    region: oregon
-    databaseName: ticketing
-    databaseUser: soa_user
 
   # ─────────────────────────────────────────────────────────────────────────
   # User Service - Autenticación (Puerto 8081)
@@ -28,17 +24,11 @@ services:
     dockerContext: ./user-service
     envVars:
       - key: SPRING_DATASOURCE_URL
-        fromDatabase:
-          name: soa-database
-          property: connectionString
+        sync: false  # Configurar manualmente con la URL de ticketing_db
       - key: SPRING_DATASOURCE_USERNAME
-        fromDatabase:
-          name: soa-database
-          property: user
+        sync: false  # Configurar manualmente
       - key: SPRING_DATASOURCE_PASSWORD
-        fromDatabase:
-          name: soa-database
-          property: password
+        sync: false  # Configurar manualmente
       - key: JWT_SECRET
         value: mysecretkeymysecretkeymysecretkeymysecretkey
       - key: GATEWAY_SECRET
@@ -58,17 +48,11 @@ services:
     dockerContext: ./event-service
     envVars:
       - key: SPRING_DATASOURCE_URL
-        fromDatabase:
-          name: soa-database
-          property: connectionString
+        sync: false  # Configurar manualmente con la URL de ticketing_db
       - key: SPRING_DATASOURCE_USERNAME
-        fromDatabase:
-          name: soa-database
-          property: user
+        sync: false
       - key: SPRING_DATASOURCE_PASSWORD
-        fromDatabase:
-          name: soa-database
-          property: password
+        sync: false
       - key: GATEWAY_SECRET
         value: soa-gateway-secret-key-2024
       - key: SERVER_PORT
@@ -86,17 +70,11 @@ services:
     dockerContext: ./payment-service
     envVars:
       - key: SPRING_DATASOURCE_URL
-        fromDatabase:
-          name: soa-database
-          property: connectionString
+        sync: false  # Configurar manualmente con la URL de ticketing_db
       - key: SPRING_DATASOURCE_USERNAME
-        fromDatabase:
-          name: soa-database
-          property: user
+        sync: false
       - key: SPRING_DATASOURCE_PASSWORD
-        fromDatabase:
-          name: soa-database
-          property: password
+        sync: false
       - key: GATEWAY_SECRET
         value: soa-gateway-secret-key-2024
       - key: SERVER_PORT
@@ -134,17 +112,11 @@ services:
     dockerContext: ./ticket-service
     envVars:
       - key: SPRING_DATASOURCE_URL
-        fromDatabase:
-          name: soa-database
-          property: connectionString
+        sync: false  # Configurar manualmente con la URL de ticket_db
       - key: SPRING_DATASOURCE_USERNAME
-        fromDatabase:
-          name: soa-database
-          property: user
+        sync: false
       - key: SPRING_DATASOURCE_PASSWORD
-        fromDatabase:
-          name: soa-database
-          property: password
+        sync: false
       - key: GATEWAY_SECRET
         value: soa-gateway-secret-key-2024
       - key: SERVER_PORT
@@ -178,17 +150,11 @@ services:
     dockerContext: ./camunda-service
     envVars:
       - key: SPRING_DATASOURCE_URL
-        fromDatabase:
-          name: soa-database
-          property: connectionString
+        sync: false  # Configurar manualmente con la URL de orchestration_db
       - key: SPRING_DATASOURCE_USERNAME
-        fromDatabase:
-          name: soa-database
-          property: user
+        sync: false
       - key: SPRING_DATASOURCE_PASSWORD
-        fromDatabase:
-          name: soa-database
-          property: password
+        sync: false
       - key: GATEWAY_SECRET
         value: soa-gateway-secret-key-2024
       - key: SERVICES_USER_SERVICE_URL
