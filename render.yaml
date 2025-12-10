@@ -24,11 +24,11 @@ services:
     dockerContext: ./user-service
     envVars:
       - key: SPRING_DATASOURCE_URL
-        sync: false  # Configurar manualmente con la URL de ticketing_db
+        value: postgresql://soa_user:EdjCROpeJRWoRSS9rrGoJMd80H5pRPMW@dpg-d4sdub9r0fns73a44mj0-a/ticketing_lcph
       - key: SPRING_DATASOURCE_USERNAME
-        sync: false  # Configurar manualmente
+        value: soa_user
       - key: SPRING_DATASOURCE_PASSWORD
-        sync: false  # Configurar manualmente
+        value: EdjCROpeJRWoRSS9rrGoJMd80H5pRPMW
       - key: JWT_SECRET
         value: mysecretkeymysecretkeymysecretkeymysecretkey
       - key: GATEWAY_SECRET
@@ -48,11 +48,11 @@ services:
     dockerContext: ./event-service
     envVars:
       - key: SPRING_DATASOURCE_URL
-        sync: false  # Configurar manualmente con la URL de ticketing_db
+        value: postgresql://soa_user:EdjCROpeJRWoRSS9rrGoJMd80H5pRPMW@dpg-d4sdub9r0fns73a44mj0-a/ticketing_lcph
       - key: SPRING_DATASOURCE_USERNAME
-        sync: false
+        value: soa_user
       - key: SPRING_DATASOURCE_PASSWORD
-        sync: false
+        value: EdjCROpeJRWoRSS9rrGoJMd80H5pRPMW
       - key: GATEWAY_SECRET
         value: soa-gateway-secret-key-2024
       - key: SERVER_PORT
@@ -70,11 +70,11 @@ services:
     dockerContext: ./payment-service
     envVars:
       - key: SPRING_DATASOURCE_URL
-        sync: false  # Configurar manualmente con la URL de ticketing_db
+        value: postgresql://soa_user:EdjCROpeJRWoRSS9rrGoJMd80H5pRPMW@dpg-d4sdub9r0fns73a44mj0-a/ticketing_lcph
       - key: SPRING_DATASOURCE_USERNAME
-        sync: false
+        value: soa_user
       - key: SPRING_DATASOURCE_PASSWORD
-        sync: false
+        value: EdjCROpeJRWoRSS9rrGoJMd80H5pRPMW
       - key: GATEWAY_SECRET
         value: soa-gateway-secret-key-2024
       - key: SERVER_PORT
@@ -112,11 +112,11 @@ services:
     dockerContext: ./ticket-service
     envVars:
       - key: SPRING_DATASOURCE_URL
-        sync: false  # Configurar manualmente con la URL de ticket_db
+        value: postgresql://soa_user:zNitKWVm8OhQfcFJdsErM6ZAjX2CDZCl@dpg-d4se11npm1nc73c0c9ng-a/ticket_db_44s7
       - key: SPRING_DATASOURCE_USERNAME
-        sync: false
+        value: soa_user
       - key: SPRING_DATASOURCE_PASSWORD
-        sync: false
+        value: zNitKWVm8OhQfcFJdsErM6ZAjX2CDZCl
       - key: GATEWAY_SECRET
         value: soa-gateway-secret-key-2024
       - key: SERVER_PORT
@@ -150,11 +150,11 @@ services:
     dockerContext: ./camunda-service
     envVars:
       - key: SPRING_DATASOURCE_URL
-        sync: false  # Configurar manualmente con la URL de orchestration_db
+        value: postgresql://soa_user:t9lYpofRgGgbrXeuBT6piJZFWS4kmDvV@dpg-d4se04ccjiac739g7aj0-a/orchestration_db
       - key: SPRING_DATASOURCE_USERNAME
-        sync: false
+        value: soa_user
       - key: SPRING_DATASOURCE_PASSWORD
-        sync: false
+        value: t9lYpofRgGgbrXeuBT6piJZFWS4kmDvV
       - key: GATEWAY_SECRET
         value: soa-gateway-secret-key-2024
       - key: SERVICES_USER_SERVICE_URL
@@ -205,3 +205,4 @@ services:
     envVars:
       - key: VITE_API_URL
         value: https://soa-gateway.onrender.com
+
