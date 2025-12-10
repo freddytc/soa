@@ -7,17 +7,14 @@
 
 services:
   # ─────────────────────────────────────────────────────────────────────────
-  # Base de Datos MySQL (PostgreSQL en Render - gratuita)
+  # Base de Datos PostgreSQL (gratuita en Render)
   # ─────────────────────────────────────────────────────────────────────────
   - type: pserv
     name: soa-database
-    env: docker
     plan: free
     region: oregon
-    databases:
-      - name: ticketing
-        databaseName: ticketing
-        user: soa_user
+    databaseName: ticketing
+    databaseUser: soa_user
 
   # ─────────────────────────────────────────────────────────────────────────
   # User Service - Autenticación (Puerto 8081)
